@@ -1,0 +1,8 @@
+services:
+  kimmiv2agent:
+    image: kimmiv2agent
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
