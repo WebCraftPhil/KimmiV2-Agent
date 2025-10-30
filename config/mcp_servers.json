@@ -1,0 +1,10 @@
+{
+  "tools": [
+    {
+      "name": "custom_example_status",
+      "module": "agent_core.tools.custom_mcp_example.server",
+      "function": "get_status"
+    }
+  ]
+}
+
