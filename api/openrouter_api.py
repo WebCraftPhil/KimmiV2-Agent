@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class OpenRouterSettings(BaseSettings):
     api_key: str
     base_url: str = "https://openrouter.ai/api/v1/chat/completions"
-    default_model: str = "moonshotai/kimi-k2"
+    default_model: str = "moonshotai/kimi-dev-72b:free"
     request_timeout: float = 60.0
 
     class Config:
