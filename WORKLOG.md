@@ -12,7 +12,7 @@
 |------------|---------------------------------------------------------------------------|-------|
 | 2025-10-26 | Drafted `PROJECTOVERVIEW.md` with end-to-end architecture and action plan | Establishes target system design and immediate steps. |
 | 2025-10-30 | Created `AGENTS.md` documenting agent roles, prompt rules, and change mgmt | Captures chaining logic and global prompting standards. |
-| 2025-10-30 | Recorded Moonshot API key in `.env`; migrating secrets to OpenRouter        | Moonshot key archived; OpenRouter to become default provider. |
+| 2025-10-30 | Provisioned OpenRouter API key (`moonshotai/kimi-dev-72b:free`) in `.env`   | Default model updated across code and env templates. |
 | 2025-10-30 | Produced this `WORKLOG.md` to track progress and outstanding work          | Centralizes delivery status, decisions, and risks. |
 | 2025-10-30 | Wired turn-level JSON logging to `data/logs/` via API layer                | Ensures each agent response is persisted for observability. |
 
@@ -23,13 +23,12 @@
 ## Backlog & Next Steps
 
 1. Create GitHub repository `kimmi-v2-openrouter` and set up CI scaffold.
-2. Update `.env` to include `OPENROUTER_API_KEY`; archive Moonshot credentials securely.
-3. Verify OpenRouter smoke test using `api/openrouter_api.py`.
-4. Build `agent_core/orchestrator.py` with memory placeholder and MCP registry hooks.
-5. Scaffold the Next.js web client with chat, JSON viewer, and memory panel components.
-6. Implement and register the first MCP server (Notion read/write).
-7. Execute end-to-end integration test: prompt → model → MCP → JSON → UI.
-8. Convert successful test runs into content artifacts for MoneyMaven.blog.
+2. Verify OpenRouter smoke test using `api/openrouter_api.py`.
+3. Build `agent_core/orchestrator.py` with memory placeholder and MCP registry hooks.
+4. Scaffold the Next.js web client with chat, JSON viewer, and memory panel components.
+5. Implement and register the first MCP server (Notion read/write).
+6. Execute end-to-end integration test: prompt → model → MCP → JSON → UI.
+7. Convert successful test runs into content artifacts for MoneyMaven.blog.
 
 ## Open Issues & Risks
 

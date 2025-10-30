@@ -21,6 +21,7 @@ class OpenRouterSettings(BaseSettings):
 
     class Config:
         env_prefix = "OPENROUTER_"
+        env_file = ".env"
 
 
 class OpenRouterClient:
