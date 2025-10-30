@@ -15,6 +15,7 @@
 | 2025-10-30 | Provisioned OpenRouter API key (`moonshotai/kimi-dev-72b:free`) in `.env`   | Default model updated across code and env templates. |
 | 2025-10-30 | Produced this `WORKLOG.md` to track progress and outstanding work          | Centralizes delivery status, decisions, and risks. |
 | 2025-10-30 | Wired turn-level JSON logging to `data/logs/` via API layer                | Ensures each agent response is persisted for observability. |
+| 2025-10-30 | Attempted OpenRouter smoke test for `moonshotai/kimi-dev-72b:free`          | API returned 404 "No allowed providers"; requires provider follow-up. |
 
 ## In Progress
 
@@ -23,8 +24,8 @@
 ## Backlog & Next Steps
 
 1. Create GitHub repository `kimmi-v2-openrouter` and set up CI scaffold.
-2. Verify OpenRouter smoke test using `api/openrouter_api.py`.
-3. Build `agent_core/orchestrator.py` with memory placeholder and MCP registry hooks.
+2. Resolve OpenRouter access for `moonshotai/kimi-dev-72b:free` (or select alternate model) and rerun the smoke test.
+3. Implement the four-step agent chain (`openai.js`) and align backend prompts with CURSOR rules.
 4. Scaffold the Next.js web client with chat, JSON viewer, and memory panel components.
 5. Implement and register the first MCP server (Notion read/write).
 6. Execute end-to-end integration test: prompt → model → MCP → JSON → UI.
@@ -35,6 +36,7 @@
 - `openai.js` does not yet exist; agent prompts must be implemented to enforce documented rules.
 - No MCP servers configured; tool layer remains theoretical until registry integration lands.
 - Absence of automated schema validation could allow malformed JSON to reach the UI.
+- OpenRouter model `moonshotai/kimi-dev-72b:free` currently unavailable (404 "No allowed providers"); confirm access or select alternative model.
 
 ## Decision Log
 

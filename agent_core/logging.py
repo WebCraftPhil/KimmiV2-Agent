@@ -1,36 +1,6 @@
-"""Utility helpers for persisting orchestrator logs."""
-
 from __future__ import annotations
 
-import json
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict
-
-from .orchestrator import AgentTurn
-
-
-def write_turn_log(turn: AgentTurn, logs_dir: Path) -> Path:
-    """Persist the agent turn to disk for observability."""
-
-    logs_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-    filename = logs_dir / f"turn-{timestamp}.json"
-
-    payload: Dict[str, Any] = {
-        "user": turn.user_message.model_dump(),
-        "assistant": turn.assistant_message.model_dump(),
-        "tool_results": turn.tool_results,
-        "raw": turn.raw_model_reply,
-    }
-    filename.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return filename
-
-
-__all__ = ["write_turn_log"]
 """Utility helpers for persisting agent turn logs."""
-
-from __future__ import annotations
 
 import json
 from dataclasses import asdict, is_dataclass

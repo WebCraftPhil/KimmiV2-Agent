@@ -4,6 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from api.openrouter_api import OpenRouterClient, OpenRouterSettings
 from agent_core.orchestrator import AgentMessage
@@ -25,7 +31,19 @@ async def run_smoke_test() -> None:
             ),
         ]
 
-        reply = await client.generate(messages)
+        try:
+            reply = await client.generate(messages)
+        except Exception as exc:  # pylint: disable=broad-except
+            print("=== OpenRouter Smoke Test FAILED ===")
+            print(f"Error: {exc}")
+            if hasattr(exc, 'response'):
+                resp = getattr(exc, 'response')
+                print(f"Status: {resp.status_code}")
+                try:
+                    print(resp.text)
+                except Exception:  # pylint: disable=broad-except
+                    pass
+            raise
 
         print("=== OpenRouter Smoke Test ===")
         print(f"Model: {settings.default_model}")
