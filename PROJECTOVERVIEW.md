@@ -130,7 +130,7 @@ These SDKs make it easier to register tools and maintain schemas, but aren’t m
 This module abstracts LLM calls so you can swap models easily.
 
 ```python
-def query_model(prompt, context=None, model="moonshotai/kimi-k2"):
+def query_model(prompt, context=None, model="moonshotai/kimi-dev-72b:free"):
     headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
     payload = {"model": model, "messages": [
         {"role": "system", "content": "You are Kimmi V2, an autonomous marketing strategist."},
