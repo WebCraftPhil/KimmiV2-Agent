@@ -12,7 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from api.openrouter_api import OpenRouterClient, OpenRouterSettings
-from agent_core.orchestrator import AgentMessage
+from agent_core.models import AgentMessage
 
 
 async def run_smoke_test() -> None:

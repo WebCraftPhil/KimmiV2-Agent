@@ -17,7 +17,7 @@ from agent_core import (
 )
 from agent_core.logging import write_turn_log
 from agent_core.memory import FileMemoryStore, MemoryConfig
-from agent_core.orchestrator import AgentMessage
+from agent_core.models import AgentMessage
 from agent_core.registry import MCPRegistry, RegistryConfig
 
 from .openrouter_api import OpenRouterClient, OpenRouterSettings

@@ -7,38 +7,13 @@ import json
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Protocol
 
-from pydantic import BaseModel, Field
-
 from .chains.content_ideation import (
     ContentChainError,
     ContentChainInput,
     ContentIdeationChain,
     FallbackString,
 )
-
-
-class AgentMessage(BaseModel):
-    """Structured chat message passed to / from the model."""
-
-    role: str
-    content: str
-    name: Optional[str] = None
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-
-
-class ToolCall(BaseModel):
-    """Represents a single tool invocation requested by the model."""
-
-    name: str
-    arguments: Dict[str, Any] = Field(default_factory=dict)
-
-
-class ModelReply(BaseModel):
-    """Normalized response from the language model."""
-
-    message: AgentMessage
-    tool_calls: List[ToolCall] = Field(default_factory=list)
-    raw: Dict[str, Any] = Field(default_factory=dict)
+from .models import AgentMessage, ModelReply, ToolCall
 
 
 class MemoryStore(Protocol):

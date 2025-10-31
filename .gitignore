@@ -34,9 +34,15 @@ ENV/
 env.bak/
 venv.bak/
 
+# Allow checked-in templates
+!.env.example
+!web/.env.local.example
+
 # Local Data & Logs
-data/logs/
-data/sessions/
+data/logs/*
+!data/logs/.gitkeep
+data/sessions/*
+!data/sessions/.gitkeep
 *.sqlite
 *.log
 

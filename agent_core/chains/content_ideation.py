@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Dict, List, Literal, Tuple
 
-from agent_core.orchestrator import AgentMessage, ModelReply
+from agent_core.models import AgentMessage, ModelReply
 
 FallbackString = "No idea generated – retry later."
 

@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional
 import httpx
 from pydantic_settings import BaseSettings
 
-from agent_core.orchestrator import AgentMessage, ModelReply, ToolCall
+from agent_core.models import AgentMessage, ModelReply, ToolCall
 
 logger = logging.getLogger(__name__)
 
