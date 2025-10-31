@@ -192,7 +192,7 @@ export default async function handler(req, res) {
 
 | Component    | Tech                                       | Purpose                     |
 | ------------ | ------------------------------------------ | --------------------------- |
-| Core Runtime | **Python 3.11+**                           | Backend agent orchestration |
+| Core Runtime | **Python 3.11.x or 3.12.x**                | Backend agent orchestration |
 | Frontend     | **Next.js 14 (TypeScript)**                | Chat UI                     |
 | LLM Access   | **OpenRouter API**                         | Model gateway               |
 | Tools        | **MCP servers (HTTP or WS)**               | Agent skills                |

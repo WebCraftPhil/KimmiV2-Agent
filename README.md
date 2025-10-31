@@ -13,7 +13,7 @@ Use this foundation to iterate toward a multi-agent SaaS workflow (think CronPos
 
 ## 1. Prerequisites
 
-- Python **3.11+**
+- Python **3.11.x or 3.12.x**
 - Node.js **18+** (Next.js 14 requirement)
 - OpenRouter API key with access to `moonshotai/kimi-dev-72b:free` (or an alternate model)
 - Optional: Docker / Docker Compose for containerized runs
@@ -52,7 +52,7 @@ Use this foundation to iterate toward a multi-agent SaaS workflow (think CronPos
 ## 3. Backend Setup (FastAPI + Orchestrator)
 
 ```bash
-python -m venv .venv
+python3.11 -m venv .venv  # or python3.12
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app:app --reload --port 8000

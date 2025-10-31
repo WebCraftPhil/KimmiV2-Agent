@@ -4,46 +4,46 @@
 
 - Date: 2025-10-30
 - Maintainer: Solo Dev
-- Current Focus: Stand up documentation and implementation plan for the autonomous content agent pipeline.
+- Current Focus: Finalize baseline runtime (backend + console) and capture operating docs.
 
 ## Completed Work
 
-| Date       | Item                                                                      | Notes |
-|------------|---------------------------------------------------------------------------|-------|
-| 2025-10-26 | Drafted `PROJECTOVERVIEW.md` with end-to-end architecture and action plan | Establishes target system design and immediate steps. |
-| 2025-10-30 | Created `AGENTS.md` documenting agent roles, prompt rules, and change mgmt | Captures chaining logic and global prompting standards. |
-| 2025-10-30 | Provisioned OpenRouter API key (`moonshotai/kimi-dev-72b:free`) in `.env`   | Default model updated across code and env templates. |
-| 2025-10-30 | Produced this `WORKLOG.md` to track progress and outstanding work          | Centralizes delivery status, decisions, and risks. |
-| 2025-10-30 | Wired turn-level JSON logging to `data/logs/` via API layer                | Ensures each agent response is persisted for observability. |
-| 2025-10-30 | Attempted OpenRouter smoke test for `moonshotai/kimi-dev-72b:free`          | API returned 404 "No allowed providers"; requires provider follow-up. |
+| Date       | Item                                                                                 | Notes |
+|------------|--------------------------------------------------------------------------------------|-------|
+| 2025-10-26 | Drafted `PROJECTOVERVIEW.md` with end-to-end architecture and action plan            | Establishes target system design and immediate steps. |
+| 2025-10-30 | Authored `AGENTS.md` + `CURSOR_RULES.md` documenting agent roles and prompting rules | Defines global contracts for the four-step pipeline. |
+| 2025-10-30 | Provisioned OpenRouter defaults (`moonshotai/kimi-dev-72b:free`) in env templates    | Keeps model selection centralized via env vars. |
+| 2025-10-30 | Implemented agent core: orchestrator, memory store, MCP registry, content chain      | `agent_core/` now operational with JSON validation + logging. |
+| 2025-10-30 | Exposed FastAPI service + OpenRouter client (`/run_agent`, `/health`)                | Turn-level logs stored in `data/logs/`; error handling wired. |
+| 2025-10-30 | Scaffolded Next.js console with chat UI + JSON viewers                               | `/pages/index.tsx` interacts with backend through `/api/agent`. |
+| 2025-10-31 | Pinned runtime guides and Docker base image to Python 3.11/3.12                      | Ensures local and container builds avoid missing 3.13 wheels. |
+| 2025-10-30 | Refreshed README, env guidance, and runtime directories (`.gitkeep`)                 | Documents setup for backend, frontend, MCP registry, Docker. |
 
 ## In Progress
 
-- Establish initial agent runtime (`openai.js` + orchestrator) that honors the documented chaining sequence.
+- Validate OpenRouter access for the default model and capture first successful end-to-end transcript.
 
 ## Backlog & Next Steps
 
-1. Create GitHub repository `kimmi-v2-openrouter` and set up CI scaffold.
-2. Resolve OpenRouter access for `moonshotai/kimi-dev-72b:free` (or select alternate model) and rerun the smoke test.
-3. Implement the four-step agent chain (`openai.js`) and align backend prompts with CURSOR rules.
-4. Scaffold the Next.js web client with chat, JSON viewer, and memory panel components.
-5. Implement and register the first MCP server (Notion read/write).
-6. Execute end-to-end integration test: prompt → model → MCP → JSON → UI.
-7. Convert successful test runs into content artifacts for MoneyMaven.blog.
+1. Add real MCP integrations (Notion, TikTok, Ideogram) and document their contracts.
+2. Implement automated schema tests for chain outputs and agent responses.
+3. Introduce CI workflows (lint, tests, type-check) once the repo moves to GitHub.
+4. Extend orchestrator for multi-agent dispatch or streaming responses.
+5. Package deployment scripts (Render/Vercel/DO) and add auth/billing scaffolds.
 
 ## Open Issues & Risks
 
-- `openai.js` does not yet exist; agent prompts must be implemented to enforce documented rules.
-- No MCP servers configured; tool layer remains theoretical until registry integration lands.
-- Absence of automated schema validation could allow malformed JSON to reach the UI.
-- OpenRouter model `moonshotai/kimi-dev-72b:free` currently unavailable (404 "No allowed providers"); confirm access or select alternative model.
+- `openai.js` (or equivalent JS orchestrator) still pending—ensure prompt templates stay in sync when added.
+- OpenRouter model `moonshotai/kimi-dev-72b:free` returned 404 during smoke test; confirm provider availability or select fallback.
+- MCP layer only includes a demo tool; production-grade connectors (Notion, TikTok, etc.) remain unimplemented.
+- No automated regression tests yet; JSON regressions could slip without schema validation.
 
 ## Decision Log
 
-- 2025-10-30: Adopted four-step agent chain (summarize → ideas → hooks → performance) as the baseline pipeline.
+- 2025-10-30: Adopted the four-step content ideation chain as the baseline agent workflow.
 - 2025-10-30: Standardized fallback response `"No idea generated – retry later."` for recovery scenarios.
 
 ## Notes for Future Updates
 
-- Log all prompt or orchestration changes here with the date, owner, and rationale.
-- Record integration test results (pass/fail) and known issues after each major run.
+- Record each MCP tool addition and prompt change here with date + owner.
+- Log every end-to-end run (success/failure) once OpenRouter access is confirmed.

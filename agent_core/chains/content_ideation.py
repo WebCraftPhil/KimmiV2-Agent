@@ -39,9 +39,14 @@ class ContentIdeationChain:
         self._max_retries = max_retries
 
     async def run(self, payload: ContentChainInput) -> ContentChainArtifacts:
+        """Execute each step of the chain and capture intermediate artifacts."""
+        # Step 1: Summarize the incoming trend signal into a single sentence.
         summary, summary_reply = await self._summarize_trend(payload)
+        # Step 2: Expand the summary into three production-ready content ideas.
         ideas, ideas_reply = await self._generate_ideas(payload, summary)
+        # Step 3: Translate each idea into a short-form hook using the requested structure.
         hooks, hooks_reply = await self._write_hooks(payload, ideas)
+        # Step 4: Score hooks for performance confidence on the specified platform.
         scores, scores_reply = await self._estimate_performance(payload, hooks)
 
         result = {
@@ -189,6 +194,8 @@ class ContentIdeationChain:
         messages: List[AgentMessage],
         required_keys: List[str],
     ) -> Tuple[Dict[str, Any], ModelReply]:
+        """Send a JSON-only request to the LLM with retry + validation logic."""
+        # Copy the original messages so we can mutate the list during retries.
         msgs = list(messages)
         for attempt in range(self._max_retries):
             reply = await self._lm_client.generate(msgs)
@@ -198,6 +205,7 @@ class ContentIdeationChain:
             except ValueError as exc:
                 if attempt + 1 >= self._max_retries:
                     raise ContentChainError(str(exc)) from exc
+                # Append an instruction reminding the model to stay in JSON.
                 msgs = msgs + [
                     AgentMessage(
                         role="system",
@@ -210,6 +218,7 @@ class ContentIdeationChain:
             if missing:
                 if attempt + 1 >= self._max_retries:
                     raise ContentChainError(f"Missing keys in model output: {missing}")
+                # Ask the model to retry with the missing fields included.
                 msgs = msgs + [
                     AgentMessage(
                         role="system",
@@ -224,6 +233,7 @@ class ContentIdeationChain:
 
     @staticmethod
     def _parse_json_content(content: str) -> Dict[str, Any]:
+        """Parse JSON responses while tolerating optional markdown code fences."""
         if not content:
             raise ValueError("Model returned empty content")
 
@@ -232,6 +242,7 @@ class ContentIdeationChain:
             # Remove code fences like ```json ... ```
             parts = stripped.split("```")
             if len(parts) >= 3:
+                # parts[1] may look like "json"; parts[2] holds the actual payload.
                 stripped = parts[2].strip() if parts[1].strip().startswith("json") else parts[1].strip()
 
         try:
