@@ -10,7 +10,7 @@ from typing import List
 
 from pydantic import ValidationError
 
-from agent_core.orchestrator import AgentMessage
+from agent_core.models import AgentMessage
 from api.openrouter_api import OpenRouterClient, OpenRouterSettings
 
 
