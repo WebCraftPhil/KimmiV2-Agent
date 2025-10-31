@@ -1,8 +1,15 @@
 import Head from 'next/head';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { z } from 'zod';
 
-const ReactJson = dynamic(() => import('react-json-view'), { ssr: false });
+const JsonViewer = dynamic(
+  () =>
+    import('@textea/json-viewer').then((mod) => {
+      return mod.JsonViewer;
+    }),
+  { ssr: false }
+);
 
 type AgentResponse = {
   message: {
@@ -92,26 +99,24 @@ export default function Home() {
                 {response.tool_results.length === 0 ? (
                   <p className="muted">No tools invoked.</p>
                 ) : (
-                  <ReactJson
-                    name={false}
-                    src={response.tool_results}
-                    collapsed={1}
-                    theme="monokai"
+                  <JsonViewer
+                    value={response.tool_results}
+                    defaultInspectDepth={1}
                     enableClipboard={false}
-                    displayDataTypes={false}
+                    rootName={false}
+                    theme="dark"
                   />
                 )}
               </article>
 
               <article>
                 <h3>Raw Model Reply</h3>
-                <ReactJson
-                  name={false}
-                  src={response.raw}
-                  collapsed={2}
-                  theme="monokai"
+                <JsonViewer
+                  value={response.raw}
+                  defaultInspectDepth={2}
                   enableClipboard={false}
-                  displayDataTypes={false}
+                  rootName={false}
+                  theme="dark"
                 />
               </article>
             </div>

@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass, field
+import json
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Protocol
 
 from pydantic import BaseModel, Field
+
+from .chains.content_ideation import (
+    ContentChainError,
+    ContentChainInput,
+    ContentIdeationChain,
+    FallbackString,
+)
 
 
 class AgentMessage(BaseModel):
@@ -88,11 +96,13 @@ class Orchestrator:
         memory: MemoryStore,
         registry: ToolRegistry,
         lm_client: LanguageModelClient,
+        content_chain: Optional[ContentIdeationChain] = None,
     ) -> None:
         self._config = config
         self._memory = memory
         self._registry = registry
         self._lm = lm_client
+        self._content_chain = content_chain
 
     async def run(self, user_text: str) -> AgentTurn:
         """Run a full reasoning turn for the provided user text."""
@@ -117,6 +127,45 @@ class Orchestrator:
             raw_model_reply=assistant_reply.raw,
         )
         return turn
+
+    async def run_content_pipeline(self, payload: ContentChainInput) -> AgentTurn:
+        if self._content_chain is None:
+            raise RuntimeError("Content chain not configured")
+
+        user_message = AgentMessage(role="user", content=json.dumps(asdict(payload)))
+
+        try:
+            artifacts = await self._content_chain.run(payload)
+        except ContentChainError as exc:
+            assistant_message = AgentMessage(role="assistant", content=FallbackString)
+            raw_model_reply: Dict[str, Any] = {
+                "chain": "contentIdeation",
+                "error": str(exc),
+            }
+            tool_results: List[Dict[str, Any]] = []
+        else:
+            assistant_message = AgentMessage(
+                role="assistant",
+                content=json.dumps(artifacts.result, indent=2),
+            )
+            raw_model_reply = {
+                "chain": "contentIdeation",
+                "steps": artifacts.raw_replies,
+            }
+            tool_results = [
+                {"step": step, "output": output}
+                for step, output in artifacts.step_outputs.items()
+            ]
+
+        await self._memory.append(user_message)
+        await self._memory.append(assistant_message)
+
+        return AgentTurn(
+            user_message=user_message,
+            assistant_message=assistant_message,
+            tool_results=tool_results,
+            raw_model_reply=raw_model_reply,
+        )
 
     async def _load_transcript(self) -> List[AgentMessage]:
         messages = []
