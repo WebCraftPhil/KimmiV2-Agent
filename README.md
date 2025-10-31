@@ -98,6 +98,7 @@ npm run dev
 
 - `config/mcp_servers.json` enumerates available tools.
 - `agent_core/tools/custom_mcp_example/server.py` implements `custom_example_status` for smoke testing.
+- `agent_core/tools/sequential_thinking/server.py` and `agent_core/tools/memory_bank/server.py` back the new diagnostic tools toggled via the registry features block.
 - Stub directories `notion_mcp`, `tiktok_mcp`, and `ideogram_mcp` include README placeholders—drop real MCP servers here and update the registry.
 
 > When you promote a tool from stub to production, log it in `WORKLOG.md` and document the contract in `AGENTS.md` per the playbook.

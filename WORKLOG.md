@@ -17,6 +17,7 @@
 | 2025-10-30 | Exposed FastAPI service + OpenRouter client (`/run_agent`, `/health`)                | Turn-level logs stored in `data/logs/`; error handling wired. |
 | 2025-10-30 | Scaffolded Next.js console with chat UI + JSON viewers                               | `/pages/index.tsx` interacts with backend through `/api/agent`. |
 | 2025-10-31 | Pinned runtime guides and Docker base image to Python 3.11/3.12                      | Ensures local and container builds avoid missing 3.13 wheels. |
+| 2025-10-31 | Enabled sequential thinking + MCP memory bank tools via registry + stubs             | Added feature flags in `config/mcp_servers.json` and local tool shims. |
 | 2025-10-30 | Refreshed README, env guidance, and runtime directories (`.gitkeep`)                 | Documents setup for backend, frontend, MCP registry, Docker. |
 
 ## In Progress

@@ -1,9 +1,30 @@
 {
+  "features": {
+    "sequentialThinking": {
+      "enabled": true,
+      "description": "Record chain-of-thought checkpoints for downstream inspection."
+    },
+    "memoryBank": {
+      "enabled": true,
+      "path": "data/mcp_memory_bank.json",
+      "description": "Persist lightweight MCP-level notes for cross-turn planning."
+    }
+  },
   "tools": [
     {
       "name": "custom_example_status",
       "module": "agent_core.tools.custom_mcp_example.server",
       "function": "get_status"
+    },
+    {
+      "name": "sequential_thinking",
+      "module": "agent_core.tools.sequential_thinking.server",
+      "function": "invoke"
+    },
+    {
+      "name": "mcp_memory_bank",
+      "module": "agent_core.tools.memory_bank.server",
+      "function": "invoke"
     }
   ]
 }

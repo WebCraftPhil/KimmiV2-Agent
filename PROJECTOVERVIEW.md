@@ -116,6 +116,8 @@ Each server just exposes endpoints or sockets conforming to the **Model Context 
 
 ✅ **No SDK strictly required** — but it helps.
 
+> Local development ships with `sequential_thinking` and `mcp_memory_bank` helper tools registered in `config/mcp_servers.json` to capture reasoning checkpoints and scratch-pad memories without hitting external services.
+
 You can:
 
 * Write your own lightweight SDK for convenience (Python or JS)
