@@ -28,8 +28,9 @@ class RegistryConfig:
 class MCPRegistry:
     """Minimal registry capable of loading local tool callables."""
 
-    def __init__(self, tools: Dict[str, ToolDescriptor]) -> None:
+    def __init__(self, tools: Dict[str, ToolDescriptor], features: Dict[str, Any] | None = None) -> None:
         self._tools = tools
+        self._features = features or {}
 
     @classmethod
     def load(cls, config: RegistryConfig) -> "MCPRegistry":
@@ -42,7 +43,8 @@ class MCPRegistry:
             item["name"]: ToolDescriptor.model_validate(item)
             for item in content.get("tools", [])
         }
-        return cls(descriptors)
+        features = content.get("features", {})
+        return cls(descriptors, features)
 
     async def execute(self, tool_name: str, arguments: Dict[str, Any]) -> Any:
         descriptor = self._tools.get(tool_name)
@@ -57,6 +59,10 @@ class MCPRegistry:
 
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, lambda: handler(**arguments))
+
+    @property
+    def features(self) -> Dict[str, Any]:
+        return self._features
 
 
 __all__ = ["MCPRegistry", "RegistryConfig", "ToolDescriptor"]

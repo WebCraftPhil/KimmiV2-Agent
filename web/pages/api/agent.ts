@@ -11,6 +11,10 @@ export default async function handler(
     return res.status(405).json({ detail: 'Method not allowed' });
   }
 
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ detail: 'Request body cannot be empty' });
+  }
+
   try {
     const response = await fetch(`${AGENT_BASE_URL}/run_agent`, {
       method: 'POST',
@@ -34,4 +38,3 @@ export default async function handler(
     return res.status(500).json({ detail: message });
   }
 }
-

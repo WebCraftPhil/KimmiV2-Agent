@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Protocol
 
 from .chains.content_ideation import (
+    ContentChainArtifacts,
     ContentChainError,
     ContentChainInput,
     ContentIdeationChain,
@@ -78,6 +80,7 @@ class Orchestrator:
         self._registry = registry
         self._lm = lm_client
         self._content_chain = content_chain
+        self._logger = logging.getLogger(__name__)
 
     async def run(self, user_text: str) -> AgentTurn:
         """Run a full reasoning turn for the provided user text."""
@@ -132,6 +135,8 @@ class Orchestrator:
                 for step, output in artifacts.step_outputs.items()
             ]
 
+            await self._after_content_chain(payload, artifacts)
+
         await self._memory.append(user_message)
         await self._memory.append(assistant_message)
 
@@ -182,6 +187,71 @@ class Orchestrator:
 
         # Fallback: return last reply if tool loop exceeded.
         return model_reply, tool_results
+
+    async def _after_content_chain(
+        self, payload: ContentChainInput, artifacts: ContentChainArtifacts
+    ) -> None:
+        features = getattr(self._registry, "features", {})
+        await self._emit_sequential_checkpoints(features, artifacts)
+        await self._update_memory_bank(features, payload, artifacts)
+
+    async def _emit_sequential_checkpoints(
+        self, features: Dict[str, Any], artifacts: ContentChainArtifacts
+    ) -> None:
+        config = (features.get("sequentialThinking") or {})
+        if not config.get("enabled"):
+            return
+
+        args: Dict[str, Any] = {"reset": True}
+        file_path = config.get("path")
+        if file_path:
+            args["file_path"] = file_path
+
+        try:
+            await self._registry.execute("sequential_thinking", args)
+            for step_name, output in artifacts.step_outputs.items():
+                summary = json.dumps(output, ensure_ascii=False)
+                if len(summary) > 400:
+                    summary = summary[:397] + "..."
+                step_args: Dict[str, Any] = {
+                    "step": step_name,
+                    "summary": summary,
+                }
+                if file_path:
+                    step_args["file_path"] = file_path
+                await self._registry.execute("sequential_thinking", step_args)
+        except Exception:
+            self._logger.exception("Failed to emit sequential thinking checkpoints")
+
+    async def _update_memory_bank(
+        self,
+        features: Dict[str, Any],
+        payload: ContentChainInput,
+        artifacts: ContentChainArtifacts,
+    ) -> None:
+        config = (features.get("memoryBank") or {})
+        if not config.get("enabled"):
+            return
+
+        entry = (
+            f"{payload.niche} | {payload.trend_source} | {artifacts.result.get('summary', '')}"
+        )
+        tags = [payload.style, payload.platform, payload.trend_source]
+        tags = [tag for tag in tags if tag]
+
+        args: Dict[str, Any] = {
+            "action": "append",
+            "entry": entry,
+            "tags": tags[:5],
+        }
+        file_path = config.get("path")
+        if file_path:
+            args["file_path"] = file_path
+
+        try:
+            await self._registry.execute("mcp_memory_bank", args)
+        except Exception:
+            self._logger.exception("Failed to append to MCP memory bank")
 
 
 async def _async_iterable(iterable: Iterable[AgentMessage]) -> Iterable[AgentMessage]:
